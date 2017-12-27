@@ -1,0 +1,10 @@
+[db]
+db_host = 47.94.222.254
+db_port = 3306
+db_user = app
+db_passwd = lanmeimei_app
+db_name = app_db
+db_charset = utf8
+
+[data]
+datadir = E:\\xiaoxu\\app\\data\\data.xlsx
