@@ -1,4 +1,4 @@
-# -*- coding:utf-8 -*-
+# -*- coding: utf-8 -*-
 import requests
 import json
 
@@ -8,6 +8,8 @@ corp = {
 'corpid': 'wwd6faf4d1ced52201',
 'corpsecret': 'h9pz4UOGU_XASk-_FgFluUMZF6HWYdN_UVLLW3b7_ps'
 }
+
+
 # FUNCTION =======================================
 def get_token():
     url = 'https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid='+corp['corpid']+'&corpsecret='+corp['corpsecret']
@@ -17,14 +19,15 @@ def get_token():
 
 
 def send_msg(CONTENT):
-    url="https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token="+get_token()
+    url = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token="+get_token()
     values = """{
-        "touser": "@all",
-        "msgtype": "text",
-        "agentid": 1000002,
-        "text":{
-            "content": "{}",
-        },"safe": "0"
-    }""".format(str(CONTENT))
+            "touser": "@all",
+            "msgtype": "text",
+            "agentid": 1000002,
+            "text":{
+                "content": "%s"
+                },
+            "safe": "0"
+            }""" % CONTENT
     req = requests.post(url, data=values)
-    print(req.text)
+    return req.json()

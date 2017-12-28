@@ -8,3 +8,6 @@ db_charset = utf8
 
 [data]
 datadir = E:\\xiaoxu\\app\\data\\data.xlsx
+
+[app]
+file_dir = E:\\xiaoxu\\app\\

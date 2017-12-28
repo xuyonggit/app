@@ -34,17 +34,18 @@ class get_data(object):
             os.remove(self.datadir)
         return tmp
 
-
-    def add_db(self, list):
-        data = list
-        print(data)
+    def add_db(self, ll):
+        print(ll)
+        data = ll
+        num = 0
         conn = dbconn.conn()
         cursor = conn.cursor()
-        insert_sql = "INSERT INTO app_db.user_data(name, sex, indate, outdate, other) VALUES ('{}','{}','{}','{}')"
+        insert_sql = "INSERT INTO app_db.user_data(name, sex, indate, outdate, other) VALUES ('{}','{}','{}','{}', '{}')"
         update_sql = "UPDATE app_db.user_data SET `name`='{}', `sex`='{}', `indate`='{}', `outdate`='{}', `other`='{}' WHERE (`name`='{}')"
         for i in data:
-            res1 = cursor.execute("SELECT count(*) from app_db.user_data where `name`='{}'".format(i[0]))
-            if res1 > 0:
+            cursor.execute("SELECT count(*) from app_db.user_data where `name`='{}'".format(i[0]))
+            n = int(cursor.fetchone()[0])
+            if n > 0:
                 if i[3]:
                     ret = cursor.execute(update_sql.format(i[0], i[1], i[2], i[3], i[4], i[0]))
                 else:
@@ -54,7 +55,8 @@ class get_data(object):
                     ret = cursor.execute(insert_sql.format(i[0], i[1], i[2], i[3], i[4]))
                 else:
                     ret = cursor.execute(insert_sql.format(i[0], i[1], i[2], i[3], 'NULL'))
+                num = num + 1
         conn.commit()
         cursor.close()
         conn.close()
-        return {'results': 0}
+        return {'results': 0, 'num': num}
