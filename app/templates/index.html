@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<title>Upload File</title>
+<title>管理页面</title>
 <head>
     <link rel="stylesheet" type="text/css" href="static/css/xcConfirm.css"/>
     <script src="static/js/jquery-1.9.1.js" type="text/javascript" charset="utf-8"></script>
     <script src="static/js/xcConfirm.js" type="text/javascript" charset="utf-8"></script>
-    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="static/css/mystyle.css"/>
+    <link rel="stylesheet" type="text/css" href="static/css/bootstrap.css"/>
     <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
     <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
     <script type="text/javascript">
@@ -60,14 +61,20 @@
         })
     </script>
 </head>
-<h1>文件导入</h1>
 <body>
-<form method="POST" enctype="multipart/form-data">
-     {{ form.hidden_tag() }}
-     {{ form.file }}
-     {% for error in form.file.errors %}
-         <span style="color: red;">{{ error }}</span>
-     {% endfor %}
-     {{ form.submit }}
-</form>
+<div class="nav-image">
+    <p class="float-right-welcome">  </p>
+</div>
+<div class="nav-body-index1">
+    <form method="POST" enctype="multipart/form-data">
+         {{ form.hidden_tag() }}
+         {{ form.file }}
+         {% for error in form.file.errors %}
+             <span style="color: red;">{{ error }}</span>
+         {% endfor %}
+         {{ form.submit }}
+    </form>
+</div>
+<div class="nav-body-box1">
+</div>
 </body>

@@ -35,7 +35,6 @@ class get_data(object):
         return tmp
 
     def add_db(self, ll):
-        print(ll)
         data = ll
         num = 0
         conn = dbconn.conn()
@@ -60,3 +59,6 @@ class get_data(object):
         cursor.close()
         conn.close()
         return {'results': 0, 'num': num}
+
+    def get_data(self):
+        pass

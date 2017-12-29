@@ -34,11 +34,6 @@ def upload_file():
     return render_template('index.html', form=form)
 
 
-@app.route('/notify', methods=['GET', 'POST'])
-def notify():
-    pass
-
-
 @app.route('/input', methods=['GET', 'POST'])
 def input():
     if request.method == 'POST':
