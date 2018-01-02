@@ -23,11 +23,11 @@ def send_msg(CONTENT):
     values = """{
             "touser": "@all",
             "msgtype": "text",
-            "agentid": 1000002,
+            "agentid": "1000002",
             "text":{
-                "content": "%s"
+                "content": "%s",
                 },
             "safe": "0"
-            }""" % CONTENT
-    req = requests.post(url, data=values)
+            }""" % str(CONTENT)
+    req = requests.post(url, values)
     return req.json()

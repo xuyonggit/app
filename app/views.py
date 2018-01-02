@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 import configparser
+import threading
 import os, json
 from app import app
 from app import getdata
@@ -17,27 +18,36 @@ configure_uploads(app, file)
 patch_request_class(app, size=64 * 1024 * 1024)
 
 
+
 @app.route('/')
-def index():
-    pass
-    return "It is working"
-
-
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     form = forms.UploadForm()
+    l = getdata.get_data().get()
+    for i in l:
+        if i[5] == 0:
+            i[5] = u"是"
+        else:
+            i[5] = u"否"
+    print(l)
     if form.validate_on_submit():
         filename = file.save(form.file.data)
         file_url = file.url(filename)
     else:
        file_url = None
-    return render_template('index.html', form=form)
+    return render_template('index.html', form=form, List=l)
 
 
 @app.route('/input', methods=['GET', 'POST'])
 def input():
     if request.method == 'POST':
-        mkdata = getdata.get_data(excelfile=datadir, delfile=1)
+        files = os.listdir(datadir)
+        if len(files) == 1:
+            filepath = os.path.join(datadir, files[0])
+        else:
+            os.remove(datadir)
+            return json.dumps({'errcode': 1})
+        mkdata = getdata.get_data(excelfile=filepath, delfile=1)
         results = mkdata.add_db(mkdata.read_xlsx())
         result = results['results']
     if result == 0:

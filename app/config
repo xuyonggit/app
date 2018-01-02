@@ -7,7 +7,7 @@ db_name = app_db
 db_charset = utf8
 
 [data]
-datadir = E:\\xiaoxu\\app\\data\\data.xlsx
+datadir = E:\\xiaoxu\\app\\data\\
 
 [app]
 file_dir = E:\\xiaoxu\\app\\

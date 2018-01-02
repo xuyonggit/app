@@ -13,6 +13,7 @@ class get_data(object):
     def __init__(self, excelfile=None, delfile=0):
         self.delfile = delfile
         self.datadir = excelfile
+        self.tmp_list = []
 
     def read_xlsx(self):
         workbook = xlrd.open_workbook(self.datadir)
@@ -39,26 +40,39 @@ class get_data(object):
         num = 0
         conn = dbconn.conn()
         cursor = conn.cursor()
-        insert_sql = "INSERT INTO app_db.user_data(name, sex, indate, outdate, other) VALUES ('{}','{}','{}','{}', '{}')"
-        update_sql = "UPDATE app_db.user_data SET `name`='{}', `sex`='{}', `indate`='{}', `outdate`='{}', `other`='{}' WHERE (`name`='{}')"
-        for i in data:
-            cursor.execute("SELECT count(*) from app_db.user_data where `name`='{}'".format(i[0]))
-            n = int(cursor.fetchone()[0])
-            if n > 0:
-                if i[3]:
-                    ret = cursor.execute(update_sql.format(i[0], i[1], i[2], i[3], i[4], i[0]))
+        try:
+            insert_sql = "INSERT INTO app_db.user_data(name, sex, indate, outdate, other) VALUES ('{}','{}','{}','{}', '{}')"
+            update_sql = "UPDATE app_db.user_data SET `name`='{}', `sex`='{}', `indate`='{}', `outdate`='{}', `other`='{}' WHERE (`name`='{}')"
+            for i in data:
+                cursor.execute("SELECT count(*) from app_db.user_data where `name`='{}'".format(i[0]))
+                n = int(cursor.fetchone()[0])
+                if n > 0:
+                    if i[3]:
+                        ret = cursor.execute(update_sql.format(i[0], i[1], i[2], i[3], i[4], i[0]))
+                    else:
+                        ret = cursor.execute(update_sql.format(i[0], i[1], i[2], i[3], 'NULL', i[0]))
                 else:
-                    ret = cursor.execute(update_sql.format(i[0], i[1], i[2], i[3], 'NULL', i[0]))
-            else:
-                if i[3]:
-                    ret = cursor.execute(insert_sql.format(i[0], i[1], i[2], i[3], i[4]))
-                else:
-                    ret = cursor.execute(insert_sql.format(i[0], i[1], i[2], i[3], 'NULL'))
-                num = num + 1
-        conn.commit()
-        cursor.close()
-        conn.close()
+                    if i[3]:
+                        ret = cursor.execute(insert_sql.format(i[0], i[1], i[2], i[3], i[4]))
+                    else:
+                        ret = cursor.execute(insert_sql.format(i[0], i[1], i[2], i[3], 'NULL'))
+                    num = num + 1
+            conn.commit()
+        finally:
+            conn.close()
         return {'results': 0, 'num': num}
 
-    def get_data(self):
-        pass
+    def get(self):
+        conn = dbconn.conn()
+        cur = conn.cursor()
+        sql = "SELECT name,sex,CAST(indate AS CHAR),CAST(outdate AS CHAR)outdate,other,status from app_db.user_data;"
+        try:
+            cur.execute(sql)
+            for i in cur:
+                tmp_l1 = []
+                for x in i:
+                    tmp_l1.append(x)
+                self.tmp_list.append(tmp_l1)
+        finally:
+            conn.close()
+        return self.tmp_list
