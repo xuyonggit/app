@@ -1,14 +1,25 @@
 # -*- coding:utf-8 -*-
 import datetime
 import time, sched
-from app import dbconn, notify
+from notify import send_msg
 schedule = sched.scheduler(time.time, time.sleep)
+
+
+def conn():
+    return pymysql.connect(
+        host = '127.0.0.1',
+        port = 3306,
+        user = 'app',
+        password = 'lanmeimei_app',
+        db = 'app_db',
+        charset = 'utf8',
+    )
 
 def func(inc=5):
     now = datetime.date.today()
     tmp_list = []
     try:
-        conn = dbconn.conn()
+        conn = conn()
         cur = conn.cursor()
         sql = "SELECT name,outdate from user_data where `status`=0"
         cur.execute(sql)
@@ -28,12 +39,11 @@ def func(inc=5):
                     msg = msg + "<a href=\'http://www.baidu.com/{}\'>{}</a>".format(i[0], i[0])
                 else:
                     msg = msg + "-<a href=\'http://www.baidu.com/{}\'>{}</a>".format(i[0], i[0])
-            notify.send_msg(msg)
+            send_msg(msg)
         schedule.enter(inc, 0, func)
         print("[ {} ]定时器执行-------------".format(datetime.datetime.now()))
         schedule.run()
     finally:
-        cur.close()
         conn.close()
 
 if __name__ == '__main__':
