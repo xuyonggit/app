@@ -1,18 +1,19 @@
 # -*- coding:utf-8 -*-
 import datetime
+import pymysql
 import time, sched
-from notify import send_msg
+from .notify import send_msg
 schedule = sched.scheduler(time.time, time.sleep)
 
 
 def conn():
     return pymysql.connect(
-        host = '127.0.0.1',
-        port = 3306,
-        user = 'app',
-        password = 'lanmeimei_app',
-        db = 'app_db',
-        charset = 'utf8',
+        host='127.0.0.1',
+        port=3306,
+        user='app',
+        password='lanmeimei_app',
+        db='app_db',
+        charset='utf8',
     )
 
 def func(inc=5):

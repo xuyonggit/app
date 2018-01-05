@@ -17,12 +17,14 @@ app.config['SECRET_KEY'] = 'a random string'
 file = UploadSet('data', DOCUMENTS)
 configure_uploads(app, file)
 patch_request_class(app, size=64 * 1024 * 1024)
+if not os.path.exists(datadir):
+    os.mkdir(datadir)
 
 
 @app.route('/')
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
-    template_url = url_for('download', name='data', _external=True)
+    template_url = url_for('download', filename='data', _external=True)
     form = forms.UploadForm()
     l = getdata.get_data().get()
     for i in l:
@@ -33,20 +35,16 @@ def upload_file():
     if form.validate_on_submit():
         filename = file.save(form.file.data)
         file_url = file.url(filename)
+        return str(os.path.split(file_url)[1])
     else:
        file_url = None
     return render_template('index.html', form=form, List=l, url=template_url)
 
 
-@app.route('/input', methods=['GET', 'POST'])
-def input():
+@app.route('/input/<filename>', methods=['GET', 'POST'])
+def input(filename):
     if request.method == 'POST':
-        files = os.listdir(datadir)
-        if len(files) == 1:
-            filepath = os.path.join(datadir, files[0])
-        else:
-            os.remove(datadir)
-            return json.dumps({'errcode': 1})
+        filepath = os.path.join(datadir, filename)
         mkdata = getdata.get_data(excelfile=filepath, delfile=1)
         results = mkdata.add_db(mkdata.read_xlsx())
         result = results['results']
@@ -63,17 +61,23 @@ def searchall():
     l = getdata.get_data().get()
     for i in l:
         t_dic = {}
-        if i[5] == 0:
-            i[5] = u"是"
-        else:
-            i[5] = u"否"
-        for s in range(5):
+        #if i[5] == 0:
+        #    i[5] = u"是"
+        #else:
+        #    i[5] = u"否"
+        for s in range(6):
             t_dic[templates[s]] = i[s]
         tmp_L.append(t_dic)
     return json.dumps(tmp_L)
 
 
-@app.route('/download/data')
-def download():
-    response = make_response(send_file(os.path.join(os.path.abspath(os.path.join(os.path.dirname(__file__),"..")), 'data', 'data.xlsx')))
+@app.route('/download/<filename>')
+def download(filename):
+    if filename == 'data':
+        response = make_response(send_file(os.path.join(os.path.abspath(os.path.join(os.path.dirname(__file__),"..")), 'data', 'data.xlsx')))
     return response
+
+
+@app.route('/modify', methods=['GET', 'POST'])
+def modify():
+    pass

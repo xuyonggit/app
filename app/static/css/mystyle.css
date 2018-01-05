@@ -3,7 +3,7 @@ body {
   background-color:rgba(45,101,203,.89);
     background-image:radial-gradient(farthest-side ellipse at 10% 0,rgba(119,157,207,.8) 30%,rgba(174,180,186,.8) 76%,rgba(199,175,156,.8));
     background-attachment:fixed,fixed;
-    color:#F8F8F8;
+    color:black;
     overflow-y:scroll
 }
 
