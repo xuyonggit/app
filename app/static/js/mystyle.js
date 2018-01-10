@@ -96,24 +96,6 @@ $(function() {
                 }
                 return aa;
             }
-        }],
-        onEditableSave: function (field, row, oldValue, $el) {
-            $.ajax({
-                type: "post",
-                url: "/modify",
-                data: row,
-                dataType: 'JSON',
-                success: function (data, status) {
-                    if (status == "success") {
-                        alert('提交数据成功');
-                    }
-                },
-                error: function () {
-                    alert('编辑失败');
-                },
-                complete: function () {
-                }
-            });
-        }
+        }]
     });
 });

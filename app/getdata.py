@@ -35,16 +35,17 @@ class get_data(object):
             os.remove(self.datadir)
         return tmp
 
-    def add_db(self, ll):
+    def add_db(self, ll, userid):
         data = ll
         num = 0
+        userid = userid
         conn = dbconn.conn()
         cursor = conn.cursor()
         try:
-            insert_sql = "INSERT INTO app_db.user_data(name, sex, indate, outdate, other) VALUES ('{}','{}','{}','{}', '{}')"
+            insert_sql = "INSERT INTO app_db.user_data(name, sex, indate, outdate, other, userid) VALUES ('{}','{}','{}','{}', '{}', '{}')"
             update_sql = "UPDATE app_db.user_data SET `name`='{}', `sex`='{}', `indate`='{}', `outdate`='{}', `other`='{}' WHERE (`name`='{}')"
             for i in data:
-                cursor.execute("SELECT count(*) from app_db.user_data where `name`='{}'".format(i[0]))
+                cursor.execute("SELECT count(*) from app_db.user_data where `name`='{}' and `userid`='{}'".format(i[0], userid))
                 n = int(cursor.fetchone()[0])
                 if n > 0:
                     if i[3]:
@@ -53,19 +54,22 @@ class get_data(object):
                         ret = cursor.execute(update_sql.format(i[0], i[1], i[2], i[3], 'NULL', i[0]))
                 else:
                     if i[3]:
-                        ret = cursor.execute(insert_sql.format(i[0], i[1], i[2], i[3], i[4]))
+                        ret = cursor.execute(insert_sql.format(i[0], i[1], i[2], i[3], i[4], userid))
                     else:
-                        ret = cursor.execute(insert_sql.format(i[0], i[1], i[2], i[3], 'NULL'))
+                        ret = cursor.execute(insert_sql.format(i[0], i[1], i[2], i[3], 'NULL', userid))
                     num = num + 1
             conn.commit()
         finally:
             conn.close()
         return {'results': 0, 'num': num}
 
-    def get(self):
+    def get(self, userid=None):
         conn = dbconn.conn()
         cur = conn.cursor()
-        sql = "SELECT name,sex,CAST(indate AS CHAR),CAST(outdate AS CHAR)outdate,other,status from app_db.user_data;"
+        if userid != None:
+            sql = "SELECT name,sex,CAST(indate AS CHAR),CAST(outdate AS CHAR)outdate,other,status from app_db.user_data where userid={};".format(userid)
+        else:
+            sql = "SELECT name,sex,CAST(indate AS CHAR),CAST(outdate AS CHAR)outdate,other,status from app_db.user_data;"
         try:
             cur.execute(sql)
             for i in cur:
@@ -76,3 +80,15 @@ class get_data(object):
         finally:
             conn.close()
         return self.tmp_list
+
+    def get_username(self, userid):
+        conn = dbconn.conn()
+        cur = conn.cursor()
+        sql = "SELECT username FROM app_db.tb_user WHERE userid=13314;"
+        try:
+            cur.execute(sql)
+            for i in cur:
+                username = i
+        finally:
+            conn.close()
+        return username[0]

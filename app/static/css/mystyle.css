@@ -144,6 +144,6 @@ a.notify:active {
 .fm-button-login{
     background: #618fb0;border-color:#5383a5;height:40px;line-height:40px;box-sizing:border-box;font-size:14px;border-radius:4px;width: 100%;}
 .float-right{float:right}
-.float-right-welcome{float:right;margin-right: 2%;margin-top: 10px;}
+.float-right-welcome{float:left;margin-right: 2%;margin-top: 10px;}
 .iconfont{font-size: 16px;
     font-style: normal;-webkit-font-smoothing: antialiased}
